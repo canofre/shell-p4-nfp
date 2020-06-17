@@ -1,5 +1,5 @@
 #!/bin/bash
-##
+## R.Canofre - canofre@inf.ufsm.br
 ## Script para gerenciar o ambiente de desenvolvimento com RTE e SmartNics
 ## Agilio da Netronome
 ##
