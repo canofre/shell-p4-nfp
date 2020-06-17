@@ -1,0 +1,15 @@
+[Unit]
+Description=Inicializacao do RTE SDK6 para interfaces
+After=network.target 
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/nfp-config.sh ni
+ 
+[Install]
+WantedBy=multi-user.target 
+#
+# Executar para adicionar link ao daemon de inicializacao
+#systemctl enable rte-start.service
+# Executar para adicionar e sempre que sofrer alguma ateracao
+#systemctl daemon-reload

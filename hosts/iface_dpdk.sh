@@ -47,16 +47,22 @@ function altera_todas(){
     done
 }
 
+function unbind(){
+    $DIR_TOOLS/dpdk-devbind.py -u $1 
+}
+
 function main(){
     if [ $# -eq 0 ]; then 
         iface_status
     
         echo -e "\t \e[32;1m iface_dpdk.sh [IDT] \tAletera o driver da interface [IDT] \e[m"
-        echo -e "\t \e[32;1m iface_dpdk.sh all \tAletera o driver de todas as interface
+        echo -e "\t \e[32;1m iface_dpdk.sh t \tAletera o driver de todas as interface
 \e[m"
         exit
     elif [ "$1" == "t" ]; then
         altera_todas
+    elif [ "$1" == "u" ]; then
+        unbind $2
     else
         altera_drv $*
     fi
