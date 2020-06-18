@@ -1,0 +1,15 @@
+[Unit]
+Description=Inicializacao do MoonGen/DPDK
+After=network.target 
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/nfp-dpdk-mg.sh mi
+ 
+[Install]
+WantedBy=multi-user.target 
+#
+# Executar para adicionar link ao daemon de inicializacao
+#systemctl enable [arq].service
+# Executar para adicionar e sempre que sofrer alguma ateracao
+#systemctl daemon-reload
