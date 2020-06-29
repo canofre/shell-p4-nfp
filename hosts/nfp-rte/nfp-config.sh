@@ -93,6 +93,7 @@ function nicClean(){
             $PATH_RTE/rtecli -p $p design-unload
         done
     fi
+
 }
 
 
@@ -137,6 +138,8 @@ function nicListRules(){
             $PATH_RTE/rtecli -p $p tables list
         done
     fi
+    echo -e "\nPara exibir as regras de uma tabela:"
+    echo "$PATH_RTE/rtecli -p [PORTA] tables -t [TABLE_NAME] list-rules"
 }
 
 
