@@ -25,6 +25,9 @@ function main() {
         nr|nic-reload)
             nicReload $*
             ;;
+        lr|list-rules)
+            nicListRules $*
+            ;;
         ri|rte-init)
             rteManager "start"
             ;;
@@ -47,6 +50,7 @@ function printHelp(){
     printf "\t ri|rte-init           : incia os servicos RTE (systemctl start nfp-sdk6-rte[x])\n"
     printf "\t rs|rte-status         : retorna o status dos servicos RTE (system status nfp-sdk6-rte[x])\n"
     printf "\t rr|rte-restart        : reinicia oos servicos RTE (system status nfp-sdk6-rte[x])\n"
+    printf "\t lr|list-rules [PORTA] : lista as tabelas de regras existentes nas portas ou na porta passada\n"
     printf "\t ns|nic-status [PORTA] : exibe o status da porta passada ou de todas ativas\n"
     printf "\t nc|nic-clean [PORTA]  : remove os drivers nffw carregados nas interfaces\n"
     printf "\t nl|nic-load [ARQUIVOS]: carrega as configuracoes  \n"
@@ -118,8 +122,21 @@ function nicReload(){
         echo " USO: nr firmware.nffw conf.p4conf [conf2.p4conf]"
         exit
     fi
-    rteManater "restart"
+#    rteManager "restart"
+    nicClean
     nicLoadDriver $*
+}
+
+function nicListRules(){
+    if [ $# -eq 2 ] && [ $2 -gt 20000 ];then
+        echo -e "\nTabela de regras da porta $2:"
+        $PATH_RTE/rtecli -p $2 tables list
+    else
+        for p in ${PORTAS[@]}; do
+            echo -e "\nTabela de regras da porta $p:"
+            $PATH_RTE/rtecli -p $p tables list
+        done
+    fi
 }
 
 
