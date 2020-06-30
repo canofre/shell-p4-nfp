@@ -25,8 +25,11 @@ function main() {
         nr|nic-reload)
             nicReload $*
             ;;
-        lr|list-rules)
-            nicListRules $*
+        tl|table-list)
+            nicTableList $*
+            ;;
+        tr|table-reload)
+            nicTableReload $*
             ;;
         ri|rte-init)
             rteManager "start"
@@ -46,18 +49,20 @@ function main() {
 function printHelp(){
     printf " USO nfp-config.sh [opcoes]\n\n"
     printf " Opcoes:\n"
-    printf "\t h                     : exibe opções e uso\n"
-    printf "\t ri|rte-init           : incia os servicos RTE (systemctl start nfp-sdk6-rte[x])\n"
-    printf "\t rs|rte-status         : retorna o status dos servicos RTE (system status nfp-sdk6-rte[x])\n"
-    printf "\t rr|rte-restart        : reinicia oos servicos RTE (system status nfp-sdk6-rte[x])\n"
-    printf "\t lr|list-rules [PORTA] : lista as tabelas de regras existentes nas portas ou na porta passada\n"
-    printf "\t ns|nic-status [PORTA] : exibe o status da porta passada ou de todas ativas\n"
-    printf "\t nc|nic-clean [PORTA]  : remove os drivers nffw carregados nas interfaces\n"
-    printf "\t nl|nic-load [ARQUIVOS]: carrega as configuracoes  \n"
-    printf "\t     - nl file.nffw conf.p4conf [conf2.p4conf]:\n"
-    printf "\t\t    Carrega o mesmo driver e arquivo de configuracao para todas as portas ou um \n"
-    printf "\t\t    arquivo de configuracao para cada que existir caso sejam passados.\n"
-    printf "\t nr|nic-reload [OPCOES]: limpa e carrega as configuracoes. Mesmos parametros da opcao nic-load \n\n"
+    printf "  h                     : exibe opções e uso\n"
+    printf "  ri|rte-init           : incia os servicos RTE (systemctl start nfp-sdk6-rte[x])\n"
+    printf "  rs|rte-status         : retorna o status dos servicos RTE (system status nfp-sdk6-rte[x])\n"
+    printf "  rr|rte-restart        : reinicia oos servicos RTE (system status nfp-sdk6-rte[x])\n"
+    printf "  tl|table-list [PORTA] : lista as tabelas de regras existentes nas portas ou na porta passada\n"
+    printf "  tr|table-reload [OP]  : carrega as configuracoes nas portas ou uma config na  porta passada\n"
+    printf "      - tr PORTA conf.p4conf | tr conf20206.p4conf conf20207.p4conf\n"
+    printf "  ns|nic-status [PORTA] : exibe o status da porta passada ou de todas ativas\n"
+    printf "  nc|nic-clean [PORTA]  : remove os drivers nffw carregados nas interfaces\n"
+    printf "  nl|nic-load [ARQUIVOS]: carrega as configuracoes  \n"
+    printf "      - nl file.nffw conf.p4conf [conf2.p4conf]:\n"
+    printf "      Carrega o mesmo driver e arquivo de configuracao para todas as portas ou um \n"
+    printf "      arquivo de configuracao para cada que existir caso sejam passados.\n"
+    printf "  nr|nic-reload [OPCOES]: limpa e carrega as configuracoes. Mesmos parametros da opcao nic-load \n\n"
 }
 
 # Inicializa um servico por porta ou retorna o status dos servicos
@@ -128,7 +133,7 @@ function nicReload(){
     nicLoadDriver $*
 }
 
-function nicListRules(){
+function nicTableList(){
     if [ $# -eq 2 ] && [ $2 -gt 20000 ];then
         echo -e "\nTabela de regras da porta $2:"
         $PATH_RTE/rtecli -p $2 tables list
@@ -140,6 +145,29 @@ function nicListRules(){
     fi
     echo -e "\nPara exibir as regras de uma tabela:"
     echo "$PATH_RTE/rtecli -p [PORTA] tables -t [TABLE_NAME] list-rules"
+}
+
+function nicTableReload(){
+    if [ $# -eq 3 ];then
+        if [ $2 -gt 20000 ]; then
+            echo "Atualizando tabela de regras da porta $2"
+            $PATH_RTE/rtecli -p $2 -c $3
+        else
+            aFile=(`echo $* | cut -d" " -f2-`)
+            i=0
+            for p in ${PORTAS[@]}; do
+                echo "Atualizando tabela de regras da porta $p"
+                $PATH_RTE/rtecli -p $p -c ${aFile[$i]}
+                i=$(($i+1))
+                i=$( [[ ${aFile[$i]} ]] && echo $i || echo $(($i-1)) );
+                #nicStatus 
+            done
+        fi
+    else
+        echo " USO: tr PORTA conf.p4conf "
+        echo "      tr conf_20206.p4conf conf_20207.p4conf"
+        exit
+    fi
 }
 
 
