@@ -54,11 +54,11 @@ function printHelp(){
     printf "  rs|rte-status         : retorna o status dos servicos RTE (system status nfp-sdk6-rte[x])\n"
     printf "  rr|rte-restart        : reinicia oos servicos RTE (system status nfp-sdk6-rte[x])\n"
     printf "  tl|table-list [PORTA] : lista as tabelas de regras existentes nas portas ou na porta passada\n"
-    printf "  tr|table-reload [OP]  : carrega as configuracoes nas portas ou uma config na  porta passada\n"
-    printf "      - tr PORTA conf.p4conf | tr conf20206.p4conf conf20207.p4conf\n"
+    printf "  tr|table-reload [FILE]: carrega uma configuracao nas portas ou uma em cada\n"
+    printf "      - tr conf.p4conf | conf20206.p4conf conf20207.p4conf ...\n"
     printf "  ns|nic-status [PORTA] : exibe o status da porta passada ou de todas ativas\n"
     printf "  nc|nic-clean [PORTA]  : remove os drivers nffw carregados nas interfaces\n"
-    printf "  nl|nic-load [ARQUIVOS]: carrega as configuracoes  \n"
+    printf "  nl|nic-load [FILE]    : carrega as configuracoes  \n"
     printf "      - nl file.nffw conf.p4conf [conf2.p4conf]:\n"
     printf "      Carrega o mesmo driver e arquivo de configuracao para todas as portas ou um \n"
     printf "      arquivo de configuracao para cada que existir caso sejam passados.\n"
@@ -149,23 +149,22 @@ function nicTableList(){
 
 function nicTableReload(){
     if [ $# -eq 3 ];then
-        if [ $2 -gt 20000 ]; then
-            echo "Atualizando tabela de regras da porta $2"
-            $PATH_RTE/rtecli -p $2 -c $3
-        else
-            aFile=(`echo $* | cut -d" " -f2-`)
-            i=0
-            for p in ${PORTAS[@]}; do
-                echo "Atualizando tabela de regras da porta $p"
-                $PATH_RTE/rtecli -p $p -c ${aFile[$i]}
-                i=$(($i+1))
-                i=$( [[ ${aFile[$i]} ]] && echo $i || echo $(($i-1)) );
-                #nicStatus 
-            done
-        fi
+        aFile=(`echo $* | cut -d" " -f2-`)
+        i=0
+        for p in ${PORTAS[@]}; do
+            echo "Atualizando tabela de regras da porta $p"
+            $PATH_RTE/rtecli -p $p config-reload -c ${aFile[$i]}
+            i=$(($i+1))
+            i=$( [[ ${aFile[$i]} ]] && echo $i || echo $(($i-1)) );
+            nicTableList $p $p
+        done
+    elif [ $# -eq 2 ]; then
+        for p in ${PORTAS[@]}; do
+            echo "Atualizando regras da porta $p"
+            $PATH_RTE/rtecli -p $p config-reload -c $2 
+        done
     else
-        echo " USO: tr PORTA conf.p4conf "
-        echo "      tr conf_20206.p4conf conf_20207.p4conf"
+        echo " USO: tr conf.p4conf | conf_20206.p4conf conf_20207.p4conf"
         exit
     fi
 }
