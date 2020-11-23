@@ -10,24 +10,30 @@ function main(){
     while [ $valid ] 
     do
        
-	    nPackets="$(sudo /opt/netronome/p4/bin/rtecli -p $1 registers get -r $2 -i 0)"
-    
+	    n206="$(sudo /opt/netronome/p4/bin/rtecli -p 20206 registers get -r $1 -i 0)"
+	    n207="$(sudo /opt/netronome/p4/bin/rtecli -p 20207 registers get -r $1 -i 0)"
 
-        startValueStr=${nPackets:4:2}
-	    endValueStr=${nPackets:12:2}
+        echo $n206 $n207
+        #tmp206=${n206:4:2}
+        #tmp207=${n207:12:2}
+	    #endValueStr=${nPackets:12:2}
 	    
-        startValue=$(( 16#$startValueStr ))
-    	endValue=$(( 16#$endValueStr ))
-    	printf "$1:$2 - ${nPackets} $startValue -  $endValue \n"
-        sleep 1s
+        #t206=$(( 16#$tmp206 ))
+        #t207=$(( 16#$tmp207 ))
 
-    	if [ $count -eq 100 ] 
-	    then
-		    break
-    	fi
-	    ((count++))
+    	#endValue=$(( 16#$endValueStr ))
+    	#printf "$1:$2 - ${nPackets} $startValue -  $endValue \n"
+    	#printf "$1: - ${n206} $t206 |  ${n207} $t207 \n"
+#        sleep 1s
+
+    	#if [ $count -eq 100 ] 
+	    #then
+		#    break
+    	#fi
+	    #((count++))
     done
 }
+
 function ver(){
     startValueStr=${nPackets:12:8}
 	endValueStr=${nPackets:34:8}
