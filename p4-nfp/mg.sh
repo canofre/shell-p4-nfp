@@ -33,5 +33,15 @@ packetgen(){
 		-tx $2 -rx $3 --dst-ip $4 --dst-ip-vary 0.0.0.0
 }
 
+#IT=100
+#CMD=$PATH_MG/examples/netronome-packetgen/packetgen.lua
+#OP="-tx 0 -rx 2 -it $IT --dst-ip $IP_DST --dst-ip-vary 0.0.0.0 " 
+#echo $PATH_MG/build/MoonGen $CMD $OP
+
 main $*
+
+
+
+
+
 

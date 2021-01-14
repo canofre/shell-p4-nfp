@@ -1,10 +1,10 @@
 #!/bin/bash
 #cut -d":" -f4 | cut -d} -f1 | tr '\n' ' '
 #cut -d":" -f4 | tr '},\n' ' '
-P1=20206
-P2=20207
+PORTAS=( `nfp-config.sh ns | grep STATUS | cut -d" " -f3` )
+echo ${PORTAS[0]}
 
-function txRx(){
+txRx()
     printf "$P1 \t\t TX \t RX \t | $P2 \t TX \t Rx \n"
     while :; do
         txRx_p1=`rtecli -p $P1 counters list-system | grep -e "'id': 35," -e "'id': 44," | cut -d":" -f4 | tr '},\n' ' '` 
@@ -14,7 +14,7 @@ function txRx(){
     done
 }
 
-function drop(){
+drop(){
     while :; do
         drop206=`rtecli -p $P1 counters list-system | grep DROP_META | cut -d":" -f4- | cut -d"}" -f1`
         drop207=`rtecli -p $P2 counters list-system | grep DROP_META | cut -d":" -f4- | cut -d"}" -f1`
@@ -23,6 +23,13 @@ function drop(){
     done
 }
 
+# Recebe a porta ($1) e o nome do contador($2) que vai ser procurado
+contadorSistema(){
+    while :; do
+        printf "\nDROP_META - $1:\t"
+        rtecli -p $1 counters list-system | grep $2 | cut -d":" -f4- | cut -d"}" -f1
+    done
+}
 
-txRx
-#drop
+
+contadorSistema ${PORTAS[0]} $1
