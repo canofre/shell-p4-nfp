@@ -41,7 +41,7 @@ function printHelp(){
     printf "\t mi|moongen-init        : incializa o moongen \n"
     printf "\t ns|nic-status          : lista o status das NIC \n"
     printf "\t nu|nic-unbind IDT      : desarrega o driver de uma NIC \n"
-    printf "\t nb|nic-bind DRIVER IDT : carrega um driver em uma NIC \n"
+    printf "\t nb|nic-bind IDT DRIVER : carrega um driver em uma NIC \n"
     printf "\t\t DRIVER: igb_uio - DPDK | nfp - Netronome \n"
 }
 
@@ -57,8 +57,8 @@ function nicUnbind(){
 }
 
 function nicBind(){
-    if [ $# -lt 3 ]; then echo "USO: nb DRIVER IDT";  exit; fi
-    $PATH_USERTOOLS/dpdk-devbind.py --bind=$2 $3
+    if [ $# -lt 3 ]; then echo "USO: nb IDT DRIVER ";  exit; fi
+    $PATH_USERTOOLS/dpdk-devbind.py --bind=$3 $2
 } 
 
 # Carrega o MoonGen 
