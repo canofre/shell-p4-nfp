@@ -11,8 +11,8 @@ PATH_USERTOOLS=$PATH_MG/libmoon/deps/dpdk/usertools
 DPDK_DRIVER=igb_uio
 
 # Inicializa a interface e seu driver de kernet
-declare -A NFP=( [idt]=03:00.0 [driver]=nfp ) #enp8s0np...
-declare -A PCI=( [idt]=04:00.0 [driver]=r8169 ) #enp6s0
+#declare -A NFP=( [idt]=03:00.0 [driver]=nfp ) #enp8s0np...
+#declare -A PCI=( [idt]=04:00.0 [driver]=r8169 ) #enp6s0
 
 function main() {
     case "$1" in
