@@ -27,7 +27,7 @@ uso(){
 
 packetgen(){
 	$PATH_EX $PATH_MG/examples/netronome-packetgen/packetgen.lua \
-		-tx $1 -rx $2 --dst-ip $3 --dst-ip-vary 0.0.0.0
+		-tx $2 -rx $3 --dst-ip $4 --dst-ip-vary 0.0.0.0
 }
 
 main $*
