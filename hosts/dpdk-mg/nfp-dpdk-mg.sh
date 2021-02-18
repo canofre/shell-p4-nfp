@@ -63,7 +63,11 @@ function nicBind(){
 
 # Carrega o MoonGen 
 function moongenInit(){
-	$PATH_MG/build.sh
+    #$PATH_MG/build.sh
+    idRemover=`nicStatus | grep drv=igb_uio | grep -v 4000 | cut -d" " -f1`
+    for((i=0;i<${#idRemover[*]};i++)); do
+        echo "nicUnbind $i ${idRemover[$i]}"
+    done
 }
 
 main $*
