@@ -14,12 +14,10 @@ interfaces, geralmente salvo em /var/lib/sbin, para possibilitar execução
 de qualquer diretório. Para o correto funcionamento é necessário que exita 
 um link simbólico ou o diretorio do MoonGen /opt.
 
-- Utilização:
-printf " USO nfp-dpdk-mg.sh [opcoes]\n\n"
-    printf " Opcoes:\n"
-    printf "\t h                      : exibe opções e uso\n"
-    printf "\t mi|moongen-init        : incializa o moongen \n"
-    printf "\t ns|nic-status          : lista o status das NIC \n"
-    printf "\t nu|nic-unbind IDT      : desarrega o driver de uma NIC \n"
-    printf "\t nb|nic-bind DRIVER IDT : carrega um driver em uma NIC \n"
-    printf "\t\t DRIVER: igb_uio - DPDK | nfp - Netronome \n
+- Utilização: nfp-dpdk-mg.sh [opcoes]
+  - h                      : exibe opções e uso
+  - mi|moongen-init        : incializa o moongen
+  - ns|nic-status          : lista o status das NIC
+  - nu|nic-unbind IDT      : desarrega o driver de uma NIC
+  - nb|nic-bind DRIVER IDT : carrega um driver em uma NIC
+    - DRIVER: igb_uio - DPDK | nfp - Netronome 
