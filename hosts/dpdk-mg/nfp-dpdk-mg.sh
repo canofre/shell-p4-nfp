@@ -11,7 +11,7 @@ PATH_USERTOOLS=$PATH_MG/libmoon/deps/dpdk/usertools
 function main() {
     case "$1" in
         mi|moongen-init)
-            moongenInit 
+            moongenInit > /tmp/moongen.log
             ;;
         ns|nic-status)
             nicStatus $*
@@ -58,13 +58,15 @@ function nicBind(){
 function moongenInit(){
     $PATH_MG/build.sh
     # removes all interfaces from the dpdk
-    idRemover=`nicStatus | grep drv=igb_uio | cut -d" " -f1`
+    idRemover=(`nicStatus | grep drv=igb_uio | cut -d" " -f1`)
     for((i=0;i<${#idRemover[*]};i++)); do
+        echo "nicUnbind $i ${idRemover[$i]}" 
         nicUnbind $i ${idRemover[$i]}
     done
     # adds the Netronome interface to dpdk
     idAdd=`nicStatus | grep 4000 | cut -d" " -f1`
+    echo "nicBind 0 $idAdd igb_uio"
     nicBind 0 $idAdd igb_uio
 }
 
-main $*
+main $* 
