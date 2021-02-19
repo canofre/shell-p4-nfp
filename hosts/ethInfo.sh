@@ -22,7 +22,7 @@ PCIA=$(lspci -d 19ee:4000 | awk '{print $1}' | xargs -Iz echo 0000:z)
 INTERFACES=`echo $PCIA | tr ' ' '\n' | xargs -Iz echo "ls /sys/bus/pci/devices/z/net" | bash`
 
 DEVICE=`echo $INTERFACES | cut -d" " -f1`
-
+echo $DEVICE
 idt $DEVICE
 
 DEVICE=`echo $INTERFACES | cut -d" " -f2`
