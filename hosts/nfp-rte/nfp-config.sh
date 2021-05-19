@@ -9,7 +9,8 @@ PATH_RTE=/opt/netronome/p4/bin
 PATH_NFP_SIM=/opt/nfp-sim/bin
 PATH_MG=/opt/MoonGen
 
-PORTAS=("20206" "20207")
+#PORTAS=("20206" "20207")
+PORTAS=("20206")
 
 function main() {
     case "$1" in
@@ -67,6 +68,11 @@ function printHelp(){
 
 # Inicializa um servico por porta ou retorna o status dos servicos
 function rteManager(){
+
+    if [ "$1" == "start" ];then
+        rmmod nfp
+        modprobe nfp nfp_dev_cpp=1 nfp_pf_netdev=0
+    fi
     systemctl $1 nfp-sdk6-rte --no-pager
     [ ${PORTAS[1]} ] && systemctl $1 nfp-sdk6-rte1 --no-pager
     [ ${PORTAS[2]} ] && systemctl $1 nfp-sdk6-rte2 --no-pager
