@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/local/sbin/nfp-config.sh ni
+ExecStart=/usr/local/sbin/nfp-config.sh ri
  
 [Install]
 WantedBy=multi-user.target 
