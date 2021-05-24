@@ -14,6 +14,9 @@ function main() {
             moongenInit > /tmp/moongen.log
             ;;
         ms|moongen-status)
+            echo -e "\e[01;31mHugepages status\e[00m"
+            mount | grep huge
+            echo ""
             service dpdk-mg status
             ;;
         hp|mount-hp)
