@@ -8,7 +8,7 @@
 PATH_MG=/opt/MoonGen
 PATH_USERTOOLS=$PATH_MG/libmoon/deps/dpdk/usertools
 
-function main() {
+main() {
     case "$1" in
         mi|moongen-init)
             moongenInit > /tmp/moongen.log
@@ -20,7 +20,7 @@ function main() {
             service dpdk-mg status
             ;;
         hp|mount-hp)
-            mount -t hugetlbfs none /mnt/huge/ -o pagesize=1G
+            hpMount
             ;; 
         ns|nic-status)
             nicStatus $*
@@ -37,7 +37,7 @@ function main() {
     esac
 }
 
-function printHelp(){
+printHelp(){
     printf " USO nfp-dpdk-mg.sh [opcoes]\n\n"
     printf " Opcoes:\n"
     printf "\t h                    : exibe opções e uso\n"
@@ -51,22 +51,22 @@ function printHelp(){
 }
 
 ## Lists information about interfaces
-function nicStatus(){
+nicStatus(){
     $PATH_USERTOOLS/dpdk-devbind.py --status-dev net | cut -d: -f2,3   
 }
 
-function nicUnbind(){
+nicUnbind(){
     if [ $# -lt 2 ]; then echo "USO: nu IDT";  exit; fi
     $PATH_USERTOOLS/dpdk-devbind.py -u $2 
 }
 
-function nicBind(){
+nicBind(){
     if [ $# -lt 3 ]; then echo "USO: nb IDT DRIVER ";  exit; fi
     $PATH_USERTOOLS/dpdk-devbind.py --bind=$3 $2
 } 
 
 # Initializes moongen and add the corret interfaces to dpdk
-function moongenInit(){
+moongenInit(){
     $PATH_MG/build.sh
     # removes all interfaces from the dpdk
     idRemover=(`nicStatus | grep drv=igb_uio | cut -d" " -f1`)
@@ -78,6 +78,14 @@ function moongenInit(){
     idAdd=`nicStatus | grep 4000 | cut -d" " -f1`
     echo "nicBind 0 $idAdd igb_uio"
     nicBind 0 $idAdd igb_uio
+
+    hpMount
+}
+
+hpMount(){
+    if [ `mount | grep huge | grep 1024 | wc -l` -eq 0 ]; then
+        mount -t hugetlbfs none /mnt/huge/ -o pagesize=1G
+    fi
 }
 
 main $* 
